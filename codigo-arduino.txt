@@ -1,0 +1,26 @@
+#include "HX711.h"
+
+HX711 scale;
+
+// Substitua 'calibration_factor' pelo valor do fator de calibração obtido durante a calibração.
+const float calibration_factor = 18500; // Substitua 'XXXX' pelo valor correto
+
+void setup() {
+  Serial.begin(9600);
+  scale.begin(11, 10); // Pinos DT e SCK conectados às portas digitais 11 e 10, respectivamente
+  scale.set_scale(calibration_factor); // Aplica o fator de calibração
+  scale.tare(); // Define a tara (assuma que a tara é 0)
+}
+
+void loop() {
+  if (scale.is_ready()) {
+    float weight = scale.get_units(10); // Lê a média de 10 leituras
+    Serial.print("Peso: ");
+    Serial.print(weight);
+    Serial.println(" kg");
+  } else {
+    Serial.println("Aguardando estabilização do sensor...");
+  }
+
+  delay(1000); // Aguarda 1 segundo antes de fazer a próxima leitura
+}
